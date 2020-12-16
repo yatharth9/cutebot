@@ -1,25 +1,29 @@
 import os
 import discord
 import csv
+from pypexels import PyPexels
 
 bot_token = os.getenv('dog_bot')
+pexels_token = os.getenv('pexels_api')
 
+id=[]
+links=[]
 #print(bot_token)
 client = discord.Client()
 
-filename = "links.csv"
+py_pexels = PyPexels(api_key=pexels_token)
 
-rows = []
+search_results = py_pexels.search(query='Animals', per_page=5)
 
-# reading csv file 
-with open(filename, 'r') as csvfile: 
-    csv_reader = csv.reader(csvfile, delimiter=',')
-    line_count = 0
-    for row in csv_reader:
-        if line_count == 0:
-            link = str(row[0])
-            line_count += 1
-#print(link)
+i = 0
+while i < 5:
+    for photo in search_results.entries:
+        id.append(photo.id)
+        l = f"https://images.pexels.com/photos/{photo.id}/pexels-photo-{photo.id}.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+        links.append(l)
+        i+=1
+        
+#print(links)
 
 @client.event
 async def on_message(message):
@@ -27,5 +31,6 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content.startswith("?cute"):
-        await message.channel.send(link)
+        for link in links:
+            await message.channel.send(link)
 client.run(bot_token)
