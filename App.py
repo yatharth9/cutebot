@@ -40,5 +40,6 @@ async def on_message(message):
             img(search)
         for link in links:
             await message.channel.send(link)
-    await client.close()
+    if message.content == "?QUIT":
+        await client.close()
 client.run(bot_token)
