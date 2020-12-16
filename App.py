@@ -28,6 +28,10 @@ def img(term = 'Puppies'):
 #print(links)
 
 @client.event
+async def on_ready():
+    print(f"Usage: ?Cute + 'Search Term'")
+
+@client.event
 async def on_message(message):
     message.content = message.content.lower()
     if message.author == client.user:
