@@ -11,17 +11,19 @@ links=[]
 #print(bot_token)
 client = discord.Client()
 
-py_pexels = PyPexels(api_key=pexels_token)
+def img(term = 'Puppies'):
 
-search_results = py_pexels.search(query='Animals', per_page=5)
+    py_pexels = PyPexels(api_key=pexels_token)
 
-i = 0
-while i < 5:
-    for photo in search_results.entries:
-        id.append(photo.id)
-        l = f"https://images.pexels.com/photos/{photo.id}/pexels-photo-{photo.id}.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-        links.append(l)
-        i+=1
+    search_results = py_pexels.search(query=term, per_page=5)
+
+    i = 0
+    while i < 5:
+        for photo in search_results.entries:
+            id.append(photo.id)
+            l = f"https://images.pexels.com/photos/{photo.id}/pexels-photo-{photo.id}.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+            links.append(l)
+            i+=1
         
 #print(links)
 
@@ -31,6 +33,12 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.content.startswith("?cute"):
+        search = message.content.lstrip("?cute ")
+        if len(search) < 2:    
+            img()
+        else:
+            img(search)
         for link in links:
             await message.channel.send(link)
+    await client.close()
 client.run(bot_token)
